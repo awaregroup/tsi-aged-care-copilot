@@ -8,7 +8,7 @@ A full deployment can take roughly 30min. A script is coming soon to automate th
 
 * Select Single-page application (SPA) as platform type, and set the redirect URI to http://localhost:3000
 * Select Accounts in this organizational directory only ({YOUR TENANT} only - Single tenant) as supported account types.
-* Make a note of the Application (client) ID from the Azure Portal for use in the Deploy Frontend step below.
+* Note the Application (client) ID from the Azure Portal for use in the Deploy Frontend step below.
 
 #### Backend app registration
 
@@ -27,14 +27,14 @@ Linking the frontend to the backend
   * Click Add scope
   * Set Scope name to access_as_user
   * Set Who can consent to Admins and users
-  * Set Admin consent display name and User consent display name to Access Chat Copilot as a user
-  * Set Admin consent description and User consent description to Allows the accesses to the Chat Copilot web API as a user
+  * Set Admin consent display name and User consent display name to'Access Chat Copilot as a user'
+  * Set Admin consent description and User consent description to 'Allows access to the Chat Copilot web API as a user'
 * Add the web app frontend as an authorized client application
   * Click Add a client application
   * For Client ID, enter the frontend's application (client) ID
   * Check the checkbox under Authorized scopes
   * Click Add application
-* Add permissions to web app frontend to access web api as user
+* Add permissions to the web app frontend to access web api as user
   * Open app registration for web app frontend
   * Go to API Permissions
   * Click Add a permission
@@ -395,3 +395,20 @@ Linking the frontend to the backend
   "value": "#99fcd6"
 }
 ```
+
+## Troubleshooting
+
+If you receive HTTP Error 500.30 - ASP.NET Core app failed to start. It could mean that the following error is occurring:
+
+> The process was terminated due to an unhandled exception. Exception Info: System.ArgumentOutOfRangeException: The Azure OpenAI API Key is empty (Parameter 'APIKey') at Microsoft.KernelMemory.AzureOpenAIConfig.Validate()
+
+Validate that the 'openai-apikey' in the KeyVault has a valid API key for an Azure OpenAPI Endpoint.
+
+Once, added - also make sure that the App Service has the following Environment variables entered:
+
+* KernelMemory__Services__AzureOpenAIEmbedding__Endpoint
+* KernelMemory__Services__AzureOpenAIText__Endpoint
+
+The value should match something like this: 'https://{TESTRESOURCE}.openai.azure.com'.
+
+Then, Stop and Start the Web App. This can occur if the 'External Azure Open AI Endpoint' and 'External Azure Open AI Key' parameters are not defined during deployment.
